@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-//C10 VertexCover Test
+//C10 VertexCover Test using 'sudo apt-get install minisat'
 //1%Loading...N2T.....
 
 int fact(int nb)
