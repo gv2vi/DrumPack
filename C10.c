@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 
 //C10 VertexCover Test
-//1%Loading...
+//1%Loading...N2T.....
 
 int fact(int nb)
 {
@@ -70,8 +70,8 @@ ecrireGraph (char *nom, int k)
   
 
 for(int x=1; x<=nb_sommet(); x++)
-	{		fprintf(descFic, " %d ", x );
-				
+	{		
+			fprintf(descFic, " %d ", x );
 			for(int y=0; y<=nb_sommet(); y++)
 			{
 				if( (est_adjacent(x,y)==1) )
@@ -173,14 +173,11 @@ int test()
 	{ 
    	wait(&status); 
   	int i;
-FILE *fp;
-    int c;
-
-    fp = fopen("res.out", "r"); // error check this!
-
-    // this while-statement assigns into c, and then checks against EOF:
-
-    while((c = fgetc(fp)) != EOF) {
+	FILE *fp;
+    	int c;
+	fp = fopen("res.out", "r"); // error check this!
+	// this while-statement assigns into c, and then checks against EOF:
+	while((c = fgetc(fp)) != EOF) {
         if (c == 'U') 
 	   return 0;
            //printf("FALSE");
@@ -188,15 +185,13 @@ FILE *fp;
 	   return 1;
 	   //printf("TRUE");
         
-    }
+    	}
 
         fclose(fp);
 	//return i;
-
-	
-  
-} 
+    } 
 }
+
 
 void test_K(int k)
 {
