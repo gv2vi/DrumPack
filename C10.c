@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-//VertexCover2Sat using Minisat
-//??%Loading....
+//C10 VertexCover Test
+//1%Loading...
 
 int fact(int nb)
 {
@@ -33,8 +33,6 @@ int comb_cal(int n)
 {
 	return fact(nb_sommet()) / ( ( fact(n) ) * ( fact(nb_sommet() - n) )  );
 }
-
-
 
 
 
@@ -112,17 +110,31 @@ void ecrireComb(char* nom, int m, int n)
 		 		   fprintf(descFic, " 0\n");
 			}
  
- 
-		/* this check is not strictly necessary, but if m is not close to n,
-		   it makes the whole thing quite a bit faster */
-		if (c[i]++ < m) continue;
+ 		if (c[i]++ < m) continue;
  
 		for (i = 0; c[i] >= m - i;) if (++i >= n) return;
 		for (c[i]++; i; i--) c[i-1] = c[i] + 1;
 	}
 }
 
-int main(int argc, char* argv[])
+void contenu(int k)
+{
+    ecrireGraph("Graph.in", k) ;
+    sleep(10);
+    ecrireComb("Comb.in", nb_sommet(), k);  
+    sleep(10);
+}
+
+
+void concat()
+{
+	char command[50];
+    	strcpy( command, "cat Graph.in Comb.in > Res1.in" );
+    	system(command);
+}
+
+
+void my_main(int k)
 {
 	int status; 
 	pid_t fork_return; 
@@ -131,18 +143,134 @@ int main(int argc, char* argv[])
 
 	if (fork_return == 0) /* child process */ 
 	{ 
-	    int k;
-	    printf("Choose K : \n");
-	    scanf("%d", &k);
-	    ecrireGraph("Graphe.in", k) ;
-    	    ecrireComb("Combinaison.in", nb_sommet(), k);
+	    contenu(k);
     	    exit(0); 
 	} 
 	else /* parent process */ 
 	{ 
   	wait(&status); 
-  	char command[50];
-    	strcpy( command, "cat Graphe.in Combinaison.in > Final.in" );
+  	concat();
+  
+	} 
+}
+
+int test()
+{
+	int status; 
+	pid_t fork_return; 
+
+	fork_return = fork(); 
+
+	if (fork_return == 0) /* child process */ 
+	{ 
+    	char command[50];
+    	strcpy( command, "minisat Res1.in res.out" );
     	system(command);
- 	} 
+    
+    	exit(0); 
+	} 
+	else /* parent process */ 
+	{ 
+   	wait(&status); 
+  	int i;
+FILE *fp;
+    int c;
+
+    fp = fopen("res.out", "r"); // error check this!
+
+    // this while-statement assigns into c, and then checks against EOF:
+
+    while((c = fgetc(fp)) != EOF) {
+        if (c == 'U') 
+	   return 0;
+           //printf("FALSE");
+           else
+	   return 1;
+	   //printf("TRUE");
+        
+    }
+
+        fclose(fp);
+	//return i;
+
+	
+  
+} 
+}
+
+void test_K(int k)
+{
+int status; 
+	pid_t fork_return; 
+
+	fork_return = fork(); 
+
+	if (fork_return == 0) /* child process */ 
+	{ 
+    	my_main(k);
+    	exit(0); 
+	} 
+	else /* parent process */ 
+	{ 
+   	wait(&status); 
+   	int i=test() ;
+	if(i==0)
+		printf("False\n");
+	else
+		printf("Good\n");
+
+	}
+
+    
+}
+
+int main(int argc, char* argv[])
+{	
+	int a;
+	printf("Choisir 1 ou 2 pour demarrer\n");
+	printf("1 pour Tester avec un K \n");
+	printf("OU \n");
+	printf("2 pour Chercher le K minimum\n");
+	printf("Votre choix : \n");	
+	scanf("%d", &a);
+	if(a == 1)
+	{	
+		printf("Votre choix soit %d  \n", a);	
+		int k;
+		printf("Entrez 1 K pour Tester\n");
+		scanf("%d", &k);
+		test_K(k);	
+	}
+	else if (a ==2)
+	{	
+		printf("Votre choix soit %d  \n", a);
+		int status; 
+		pid_t fork_return; 
+
+		fork_return = fork(); 
+
+		if (fork_return == 0) /* child process */ 
+		   { 
+	    		printf("K=1...Loading...");
+		   } 
+		else /* parent process */ 
+		   { 
+  			wait(&status); 
+  			for(int i=1; i<=nb_sommet()+1; i++)
+			   {
+				if(i != nb_sommet()+1)
+				   {
+					printf("K=%d...Loading....\n", i);
+					test_K(i);
+				
+				   }
+				else
+				printf("THE END\n");
+		   	   }
+		    }
+	} 
+	else
+	{	printf("Pas command \n");	
+	 	return 0;
+	} 
 }
